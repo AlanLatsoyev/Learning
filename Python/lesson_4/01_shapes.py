@@ -2,6 +2,7 @@
 
 import simple_draw as sd
 
+
 # Часть 1.
 # Написать функции рисования равносторонних геометрических фигур:
 # - треугольника
@@ -27,7 +28,77 @@ import simple_draw as sd
 # sd.line()
 # Результат решения см lesson_004/results/exercise_01_shapes.jpg
 
-# TODO здесь ваш код
+# def triangle(point, angle=0, length=200):
+#     v1 = sd.get_vector(start_point=point, angle=angle, length=length, width=2)
+#     v1.draw()
+#
+#     v2 = sd.get_vector(start_point=v1.end_point, angle=angle + 120, length=length, width=2)
+#     v2.draw()
+#
+#     v3 = sd.get_vector(start_point=v2.end_point, angle=angle + 240, length=length, width=2)
+#     v3.draw()
+#
+#
+# def quadrangle(point, angle=0, length=200):
+#     v1 = sd.get_vector(start_point=point, angle=angle, length=length, width=2)
+#     v1.draw()
+#
+#     v2 = sd.get_vector(start_point=v1.end_point, angle=angle + 90, length=length, width=2)
+#     v2.draw()
+#
+#     v3 = sd.get_vector(start_point=v2.end_point, angle=angle + 180, length=length, width=2)
+#     v3.draw()
+#
+#     v4 = sd.get_vector(start_point=v3.end_point, angle=angle + 270, length=length, width=2)
+#     v4.draw()
+#
+#
+# def pentagon(point, angle=0, length=200):
+#     v1 = sd.get_vector(start_point=point, angle=angle, length=length, width=2)
+#     v1.draw()
+#
+#     v2 = sd.get_vector(start_point=v1.end_point, angle=angle + 72, length=length, width=2)
+#     v2.draw()
+#
+#     v3 = sd.get_vector(start_point=v2.end_point, angle=angle + 144, length=length, width=2)
+#     v3.draw()
+#
+#     v4 = sd.get_vector(start_point=v3.end_point, angle=angle + 216, length=length, width=2)
+#     v4.draw()
+#
+#     v5 = sd.get_vector(start_point=v4.end_point, angle=angle + 288, length=length, width=2)
+#     v5.draw()
+#
+#
+# def hexagon(point, angle=0, length=200):
+#     v1 = sd.get_vector(start_point=point, angle=angle, length=length, width=2)
+#     v1.draw()
+#
+#     v2 = sd.get_vector(start_point=v1.end_point, angle=angle + 60, length=length, width=2)
+#     v2.draw()
+#
+#     v3 = sd.get_vector(start_point=v2.end_point, angle=angle + 120, length=length, width=2)
+#     v3.draw()
+#
+#     v4 = sd.get_vector(start_point=v3.end_point, angle=angle + 180, length=length, width=2)
+#     v4.draw()
+#
+#     v5 = sd.get_vector(start_point=v4.end_point, angle=angle + 240, length=length, width=2)
+#     v5.draw()
+#
+#     v6 = sd.get_vector(start_point=v5.end_point, angle=angle + 300, length=length, width=2)
+#     v6.draw()
+#
+#
+# point_0 = sd.get_point(200, 200)
+# triangle(point=point_0, angle=0)
+#
+# quadrangle(point=point_0, angle=0)
+#
+# pentagon(point=point_0, angle=0)
+#
+# hexagon(point=point_0, angle=0)
+
 
 # Часть 1-бис.
 # Попробуйте прикинуть обьем работы, если нужно будет внести изменения в этот код.
@@ -52,5 +123,14 @@ import simple_draw as sd
 # Поэтому среди программистов есть принцип D.R.Y. https://clck.ru/GEsA9
 # Будьте ленивыми, не используйте копи-пасту!
 
+def figures(point, angle=0, length=100, number_of_corners=3, color=sd.COLOR_YELLOW, width=2):
+    for _ in range(number_of_corners):
+        v_ = sd.get_vector(start_point=point, angle=angle, length=length, width=width)
+        v_.draw(color=color)
+        point = v_.end_point
+        angle += 360 / number_of_corners
 
+
+point_0 = sd.get_point(200, 200)
+figures(point=point_0, number_of_corners=9)
 sd.pause()
