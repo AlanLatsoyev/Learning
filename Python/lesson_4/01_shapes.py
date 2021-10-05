@@ -131,6 +131,16 @@ def figures(point, angle=0, length=100, number_of_corners=3, color=sd.COLOR_YELL
         angle += 360 / number_of_corners
 
 
-point_0 = sd.get_point(200, 200)
-figures(point=point_0, number_of_corners=9)
+point_0 = sd.get_point(100, 100)
+figures(point=point_0, number_of_corners=3)
+
+point_0 = sd.get_point(100, 400)
+figures(point=point_0, number_of_corners=4)
+
+point_0 = sd.get_point(400, 100)
+figures(point=point_0, number_of_corners=5)
+
+point_0 = sd.get_point(400, 400)
+figures(point=point_0, number_of_corners=6)
+
 sd.pause()
