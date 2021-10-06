@@ -80,14 +80,12 @@ def draw_branches(point, angle, length):
 
     v1 = sd.get_vector(start_point=point, angle=angle-(30 + sd.random_number(-30, 30)/100), length=length, width=1)
     v1.draw()
+    v2 = sd.get_vector(start_point=point, angle=angle+(30 + sd.random_number(-30, 30)/100), length=length, width=1)
+    v2.draw()
     next_point_1 = v1.end_point
     next_angle_1 = angle - (30 + 30 * sd.random_number(-40, 40)/100)
     next_length = length * (.75 + .75 * sd.random_number(-20, 20)/100)
     draw_branches(point=next_point_1, angle=next_angle_1, length=next_length)
-
-
-    v2 = sd.get_vector(start_point=point, angle=angle+(30 + sd.random_number(-30, 30)/100), length=length, width=1)
-    v2.draw()
     next_point_2 = v2.end_point
     next_angle_2 = angle + (30 + 30 * sd.random_number(-40, 40)/100)
     next_length_2 = length * (.75 + .75 * sd.random_number(-20, 20)/100)
