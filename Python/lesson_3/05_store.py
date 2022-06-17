@@ -46,9 +46,7 @@ store = {
 #         подсчет стоимости товара
 #     вывод на консоль количества и стоимости товара на складе
 
-for good in goods:
-    good_name = good
-    good_code = goods[good]
+for good_name, good_code in goods.items():
     totel_good_quantity, total_value_of_goods = 0, 0
 
     for _ in store[good_code]:
