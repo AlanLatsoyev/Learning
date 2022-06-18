@@ -82,7 +82,7 @@ list_length = [30, 33, 34, 35, 25, 26, 15, 20, 22, 38, 28, 39, 29, 24, 23, 21, 2
 while True:
 
     for i in range(20):
-        if list_y[i] < 50:
+        if list_y[i] < list_length[i]:
             list_y[i] = 750
             continue
         sd.start_drawing()
