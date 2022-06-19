@@ -42,5 +42,33 @@
 # Движок игры реализует только саму функциональность игры.
 # Это пример применения SOLID принципа (см https://goo.gl/GFMoaI) в архитектуре программ.
 # Точнее, в этом случае важен принцип единственной ответственности - https://goo.gl/rYb3hT
+from termcolor import cprint
+from lesson_6.mastermind_engine import think_of_a_number, check_number
 
-# TODO здесь ваш код...
+
+
+think_of_a_number()
+number_of_attempts = 0
+while True:
+    number_of_attempts += 1
+    number_of_users = input("введите четырехзначное число c неповторяющимися цифрами  >")
+    if 1023 <= int(number_of_users) <= 9876 and len(set(number_of_users)) == 4:
+
+        cprint(check_number(number=number_of_users), color='yellow')
+        result = check_number(number=number_of_users)
+
+        if check_number(number=number_of_users)['bulls'] == 4 :
+            cprint('Вы угадали число !!!', color='cyan')
+            cprint('Количество попыток {} '.format(number_of_attempts), color='cyan')
+
+    else:
+        cprint("Введенное число должно быть четырехзначное c неповторяющимися цифрами !!!", color='red')
+
+    continue
+
+
+
+
+
+
+
