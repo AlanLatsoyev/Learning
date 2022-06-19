@@ -41,5 +41,3 @@ print(((point_2[0]-center_of_circle[0]) ** 2 + (point_2[1]-center_of_circle[1]) 
 # 77777.7777
 # False
 # False
-
-

@@ -17,9 +17,25 @@
 #  - справа в небе - радуга, слева - солнце (весна же!)
 # пример см. lesson_005/results/04_painting.jpg
 # Приправить своей фантазией по вкусу (коты? коровы? люди? трактор? что придумается)
+import simple_draw as sd
+from modules_for_drawing.drawing_snowflakes import snowflkes
+from modules_for_drawing.drawing_home import home
+from modules_for_drawing.drawing_tree import draw_branches
+from modules_for_drawing.drawing_rainbow import rainbow
+from modules_for_drawing.drawing_emoticons import smile
 
-# TODO здесь ваш код
 
+
+sd.resolution = (1333, 700)
+
+snowflkes()
+home_point = sd.get_point(600, 100)
+home(point=home_point)
+
+for x in range(900, 1200, 100):
+    tree_point = sd.get_point(x, 50)
+    draw_branches(point=tree_point, length=50, angle=90)
+sd.pause()
 # Усложненное задание (делать по желанию)
 # Анимировать картину.
 # Пусть слева идет снегопад, радуга переливается цветами, смайлик моргает, солнце крутит лучами, етс.
