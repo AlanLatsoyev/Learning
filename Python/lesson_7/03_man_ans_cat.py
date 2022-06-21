@@ -34,7 +34,8 @@ class Home:
         self.man_food = 0
 
     def __str__(self):
-        return 'Количество кошачей еды-{}, Уровень загрезнения в доме-{}'.format(self.cat_food, self.mud)
+        return 'Количество кошачей еды-{}, Уровень загрезнения в доме-{}  ' \
+               'Количество еды-{}'.format(self.cat_food, self.mud, self.man_food)
 
 
 class Cat:
@@ -42,7 +43,7 @@ class Cat:
 
     def __init__(self):
         self.name = choice(Cat.name)
-        self.fullness = 0
+        self.fullness = 50
         self.home = None
 
     def eat(self):
@@ -53,11 +54,12 @@ class Cat:
 
     def sleep(self):
         self.fullness -= 10
-        cprint('Кот высполся но немного проголодался:)')
+        cprint('Кот {} высполся но немного проголодался:)'.format(self.name), color='yellow')
 
     def tear_wallpaper(self):
         self.fullness -= 10
         self.home.mud += 5
+        cprint('Кот {} поточил свои коготки об обои'.format(self.name), color='yellow')
 
     def choice_of_actions(self):
         if self.fullness < 10:
@@ -74,11 +76,13 @@ class Cat:
 
 
 class Man:
-    def __init__(self, name):
+    def __init__(self, name, home):
         self.name = name
         self.money = 100
-        self.fullness = 0
-        self.home = Home()
+        self.fullness = 50
+        self.home = home
+    def __str__(self):
+        return 'Количество денег-{}, Сытость-{}'.format(self.money, self.fullness)
 
     def watch_MTV(self):
         cprint('{} смотрел MTV целый день'.format(self.name), color='green')
@@ -86,7 +90,7 @@ class Man:
 
     def buy_food_for_yourself(self):
         if self.money >= 50:
-            cprint('{} сходил в магазин за едой'.format(self.name), color='magenta')
+            cprint('{} сходил в магазин за едой для себя'.format(self.name), color='magenta')
             self.money -= 50
             self.home.man_food += 50
         else:
@@ -94,7 +98,7 @@ class Man:
 
     def buy_cat_food(self):
         if self.money >= 50:
-            cprint('{} сходил в магазин за едой'.format(self.name), color='magenta')
+            cprint('{} сходил в магазин за едой для кота'.format(self.name), color='magenta')
             self.money -= 50
             self.home.cat_food += 50
         else:
@@ -102,7 +106,7 @@ class Man:
 
     def clean_up_the_house(self):
         self.home.mud -= 100
-        self.fullness -= 20
+        self.fullness -= 10
         self.money -= 10
 
     def work(self):
@@ -110,8 +114,8 @@ class Man:
         self.money += 150
         self.fullness -= 10
 
-    def pick_up_cat(self):
-        Cat.home = Home
+    def pick_up_cat(self, name, home):
+        name.home = home
         self.money += 50
 
     def act(self):
@@ -119,20 +123,23 @@ class Man:
             cprint('{} умер...'.format(self.name), color='red')
             return
         dice = randint(1, 6)
-        if self.fullness < 20:
+        if self.fullness <= 20:
             self.eat()
-        elif self.home.man_food < 10:
-            self.buy_food_for_yourself()
-        elif self.home.cat_food < 10:
+        elif self.home.cat_food <= 10:
             self.buy_cat_food()
-        elif self.money < 50:
-            self.work()
+        elif self.home.mud >= 100:
+            self.clean_up_the_house()
+        elif self.home.man_food <= 10:
+            self.buy_food_for_yourself()
+
         elif dice == 1:
             self.work()
         elif dice == 2:
             self.eat()
         else:
             self.watch_MTV()
+        if self.money <= 50:
+            self.work()
 
     def eat(self):
         if self.home.man_food >= 10:
@@ -141,6 +148,32 @@ class Man:
             self.home.man_food -= 10
         else:
             cprint('{} нет еды'.format(self.name), color='red')
+
+
+NUMBER_OF_CATS = 4
+AMOUNT_OF_DAYS = 366
+cats = []
+sweet_home = Home()
+cat_slave = Man(name='Петя', home=sweet_home)
+
+# cat = Cat()
+# cat_slave.pick_up_cat(cat)
+for i in range(0, NUMBER_OF_CATS):
+    cats.append(i)
+    cats[i] = Cat()
+    cat_slave.pick_up_cat(name=cats[i], home=sweet_home)
+
+
+for day in range(1, AMOUNT_OF_DAYS):
+    print('================ день {} =================='.format(day))
+    cat_slave.act()
+    for cat in cats:
+        cat.choice_of_actions()
+
+    print(cat_slave)
+    print(sweet_home)
+
+
 
 # Усложненное задание (делать по желанию)
 # Создать несколько (2-3) котов и подселить их в дом к человеку.
