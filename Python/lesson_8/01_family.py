@@ -45,10 +45,11 @@ from random import randint
 
 class Human:
 
-    def __init__(self, home):
+    def __init__(self, home, name):
         self.fullness = 30
         self.happiness = 100
         self.home = home
+        self.name = name
 
     def eat(self):
         if self.home.man_food >= 30:
@@ -66,6 +67,10 @@ class Human:
         if self.home.mud >= 90:
             self.happiness -= 10
 
+    def pet_cat(self):
+        self.happiness += 5
+        print('{} весь день гадил котика'.format(self.name))
+
     def __str__(self):
         return ' Сытость-{} Уровень счастья-{}'.format(self.fullness, self.happiness)
 
@@ -74,10 +79,12 @@ class House:
     total_money = 100
     total_buy_fur_coat = 0
     total_ate_food = 0
+    total_food_for_cat = 0
 
     def __init__(self):
         self.money = 100
         self.man_food = 50
+        self.cat_food = 30
         self.mud = 0
 
     def __str__(self):
@@ -86,7 +93,7 @@ class House:
 
 class Husband(Human):
     def __init__(self, name, home):
-        super().__init__(home=home)
+        super().__init__(home=home, name=name)
         self.name = name
 
     def __str__(self):
@@ -112,7 +119,7 @@ class Husband(Human):
         self.happiness += 20
 
     def act(self):
-        dice = randint(1, 6)
+        dice = randint(1, 10)
         super().act()
         if self.fullness <= 0:
             cprint('{} умер с голоду...'.format(self.name), color='red')
@@ -124,6 +131,8 @@ class Husband(Human):
             self.work()
         elif dice == 2:
             self.eat()
+        elif dice == 3:
+            self.pet_cat()
         else:
             self.gaming()
 
@@ -131,7 +140,7 @@ class Husband(Human):
 class Wife(Human):
 
     def __init__(self, name, home):
-        super().__init__(home=home)
+        super().__init__(home=home, name=name)
         self.name = name
 
     def __str__(self):
@@ -153,15 +162,27 @@ class Wife(Human):
         else:
             cprint(' Деньги закончились. Пора на работу !', color='red')
 
+    def buy_cat_food(self):
+        if self.home.money >= 50:
+            cprint('{} сходила в магазин за едой для кота'.format(self.name), color='magenta')
+            self.home.money -= 50
+            self.home.cat_food += 50
+            self.home.total_food_for_cat += 50
+        else:
+            cprint('К сожалению деньги закончились. Не на что купить котику еды!'.format(self.name), color='red')
+
     def buy_fur_coat(self):
         self.home.money -= 350
         self.happiness += 60
         self.home.total_buy_fur_coat += 1
+        cprint('{} ходила за новой шубой. Зачем ей их столько ?'.format(self.name), color='green')
+
 
 
     def clean_house(self):
         self.home.mud -= 100
         self.fullness -= 10
+        cprint('{} весь день убиралась в доме'.format(self.name), color='green')
 
     def watch_MTV(self):
         cprint('{} смотрела MTV целый день'.format(self.name), color='green')
@@ -169,7 +190,7 @@ class Wife(Human):
         # self.happiness += 10
 
     def act(self):
-        dice = randint(1, 6)
+        dice = randint(1, 10)
         super().act()
         if self.fullness <= 0:
             cprint('{} умер с голоду...'.format(self.name), color='red')
@@ -177,6 +198,8 @@ class Wife(Human):
             cprint('{} умер от депрессии...'.format(self.name), color='red')
         if self.home.man_food <= 60:
             self.shopping()
+        elif self.home.cat_food <= 50:
+            self.buy_cat_food()
         elif self.home.mud >= 100:
             self.clean_house()
         elif self.happiness < 60:
@@ -185,6 +208,8 @@ class Wife(Human):
             self.shopping()
         elif dice == 2:
             self.eat()
+        elif dice == 3:
+            self.pet_cat()
         else:
             self.watch_MTV()
 
@@ -214,23 +239,62 @@ class Wife(Human):
 # Если кот дерет обои, то грязи становится больше на 5 пунктов
 
 
-# class Cat:
-#
-#     def __init__(self):
-#         pass
-#
-#     def act(self):
-#         pass
-#
-#     def eat(self):
-#         pass
-#
-#     def sleep(self):
-#         pass
-#
-#     def soil(self):
-#         pass
-#
+class Cat:
+
+    def __init__(self, name, home):
+        self.name = name
+        self.fullness = 30
+        self.home = home
+
+    def eat(self):
+        self.fullness += 20
+        self.home.cat_food -= 10
+        cprint('Кот {} поел! Сытость увеличилась на-{}. Количество еды уменьшилось на-{}'.format(self.name, 20, 10),
+               color='green')
+
+    def sleep(self):
+        self.fullness -= 10
+        cprint('Кот {} выспался но немного проголодался:)'.format(self.name), color='yellow')
+
+    def tear_wallpaper(self):
+        self.fullness -= 10
+        self.home.mud += 5
+        cprint('Кот {} поточил свои когти об обои. Себе в удовольствие и людям на счастье'.format(self.name),
+               color='yellow')
+
+    def choice_of_actions(self):
+        if self.fullness < 10:
+            if self.home.cat_food >= 10:
+                self.eat()
+            else:
+                cprint('!!!!====Котик {} помер с голоду ;((====!!!!'.format(self.name), color='red')
+            return
+        cat_choice = randint(0, 1)
+        if cat_choice == 0:
+            self.tear_wallpaper()
+        elif cat_choice == 1:
+            self.eat()
+        else:
+            self.sleep()
+
+
+home = House()
+serge = Husband(name='Сережа', home=home)
+masha = Wife(name='Маша', home=home)
+barsik = Cat(name='Барсик', home=home)
+
+for day in range(1, 365):
+    cprint('================== День {} =================='.format(day), color='red')
+    serge.act()
+    masha.act()
+    barsik.choice_of_actions()
+    print(serge)
+    print(masha)
+    print(home)
+    cprint('Всего еды было куплено {}'.format(home.total_ate_food), color='yellow')
+    cprint('Всего для кота  было куплено {} еды'.format(home.total_food_for_cat), color='yellow')
+    cprint('Всего шуб было куплено {}'.format(home.total_buy_fur_coat), color='yellow')
+    cprint('Всего денег заработано {}'.format(home.total_money), color='yellow')
 
 ######################################################## Часть вторая бис
 #
