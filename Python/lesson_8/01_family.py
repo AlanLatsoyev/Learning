@@ -3,6 +3,7 @@
 from termcolor import cprint
 from random import randint
 
+
 ######################################################## Часть первая
 #
 # Создать модель жизни небольшой семьи.
@@ -82,11 +83,11 @@ class House:
     def __str__(self):
         return 'Еды в доме = {} денег {} грязь {}'.format(self.man_food, self.money, self.mud)
 
+
 class Husband(Human):
     def __init__(self, name, home):
         super().__init__(home=home)
         self.name = name
-
 
     def __str__(self):
         res = super().__str__()
@@ -157,6 +158,7 @@ class Wife(Human):
         self.happiness += 60
         self.home.total_buy_fur_coat += 1
 
+
     def clean_house(self):
         self.home.mud -= 100
         self.fullness -= 10
@@ -164,7 +166,7 @@ class Wife(Human):
     def watch_MTV(self):
         cprint('{} смотрела MTV целый день'.format(self.name), color='green')
         self.fullness -= 10
-        #self.happiness += 10
+        # self.happiness += 10
 
     def act(self):
         dice = randint(1, 6)
@@ -186,21 +188,6 @@ class Wife(Human):
         else:
             self.watch_MTV()
 
-
-home = House()
-serge = Husband(name='Сережа', home=home)
-masha = Wife(name='Маша', home=home)
-
-for day in range(1, 365):
-    cprint('================== День {} =================='.format(day), color='red')
-    serge.act()
-    masha.act()
-    print(serge)
-    print(masha)
-    print(home)
-    cprint('Всего еды было куплено {}'.format(home.total_ate_food), color='yellow')
-    cprint('Всего шуб было куплено {}'.format(home.total_buy_fur_coat), color='yellow')
-    cprint('Всего денег заработано {}'.format(home.total_money), color='yellow')
 
 ######################################################## Часть вторая
 #
@@ -254,28 +241,62 @@ for day in range(1, 365):
 #   спать,
 #
 # отличия от взрослых - кушает максимум 10 единиц еды,
-# степень счастья  - не меняется, всегда ==100 ;)
+# степень счастья - не меняется, всегда ==100 ;)
 
-# class Child:
-#
-#     def __init__(self):
-#         pass
-#
-#     def __str__(self):
-#         return super().__str__()
-#
-#     def act(self):
-#         pass
-#
-#     def eat(self):
-#         pass
-#
-#     def sleep(self):
-#         pass
-#
-#
-# # TODO после реализации второй части - отдать на проверку учителем две ветки
-#
+class Child(Human):
+
+    def __init__(self, name, home):
+        super().__init__(home=home)
+        self.name = name
+        self.fullness = 10
+
+    def __str__(self):
+        res = super().__str__()
+        return 'У {}'.format(self.name) + res
+
+    def act(self):
+        if self.fullness < 10:
+            if self.home.man_food >= 10:
+                self.eat()
+            else:
+                cprint('!!!!==== {} помер с голоду ;((====!!!!'.format(self.name), color='red')
+            return
+        cat_choice = randint(0, 5)
+        if cat_choice == 0:
+            self.eat()
+        else:
+            self.sleep()
+
+    def eat(self):
+        if self.home.man_food >= 10:
+            cprint('{} поел'.format(self.name), color='yellow')
+            self.fullness += 10
+            self.home.man_food -= 10
+        else:
+            cprint('{} громко плачет !!!'.format(self.name), color='red')
+
+    def sleep(self):
+        self.fullness -= 10
+        cprint('{} выспался но немного проголодался:)'.format(self.name), color='yellow')
+
+
+home = House()
+serge = Husband(name='Сережа', home=home)
+masha = Wife(name='Маша', home=home)
+kolya = Child(name='Коля', home=home)
+
+for day in range(1, 365):
+    cprint('================== День {} =================='.format(day), color='red')
+    serge.act()
+    masha.act()
+    kolya.act()
+    print(serge)
+    print(masha)
+    print(kolya)
+    print(home)
+    cprint('Всего еды было куплено {}'.format(home.total_ate_food), color='yellow')
+    cprint('Всего шуб было куплено {}'.format(home.total_buy_fur_coat), color='yellow')
+    cprint('Всего денег заработано {}'.format(home.total_money), color='yellow')
 
 ######################################################## Часть третья
 #
@@ -323,4 +344,3 @@ for day in range(1, 365):
 #       for salary in range(50, 401, 50):
 #           max_cats = life.experiment(salary)
 #           print(f'При зарплате {salary} максимально можно прокормить {max_cats} котов')
-
