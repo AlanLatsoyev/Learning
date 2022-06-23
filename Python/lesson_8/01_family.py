@@ -278,23 +278,6 @@ class Cat:
             self.sleep()
 
 
-home = House()
-serge = Husband(name='Сережа', home=home)
-masha = Wife(name='Маша', home=home)
-barsik = Cat(name='Барсик', home=home)
-
-for day in range(1, 365):
-    cprint('================== День {} =================='.format(day), color='red')
-    serge.act()
-    masha.act()
-    barsik.choice_of_actions()
-    print(serge)
-    print(masha)
-    print(home)
-    cprint('Всего еды было куплено {}'.format(home.total_ate_food), color='yellow')
-    cprint('Всего для кота  было куплено {} еды'.format(home.total_food_for_cat), color='yellow')
-    cprint('Всего шуб было куплено {}'.format(home.total_buy_fur_coat), color='yellow')
-    cprint('Всего денег заработано {}'.format(home.total_money), color='yellow')
 
 ######################################################## Часть вторая бис
 #
@@ -310,7 +293,7 @@ for day in range(1, 365):
 class Child(Human):
 
     def __init__(self, name, home):
-        super().__init__(home=home)
+        super().__init__(home=home, name=name)
         self.name = name
         self.fullness = 10
 
@@ -348,12 +331,14 @@ home = House()
 serge = Husband(name='Сережа', home=home)
 masha = Wife(name='Маша', home=home)
 kolya = Child(name='Коля', home=home)
+barsik = Cat(name='Барсик', home=home)
 
-for day in range(1, 365):
+for day in range(1, 366):
     cprint('================== День {} =================='.format(day), color='red')
     serge.act()
     masha.act()
     kolya.act()
+    barsik.choice_of_actions()
     print(serge)
     print(masha)
     print(kolya)
