@@ -2,17 +2,19 @@
 
 
 # Есть функция генерации списка простых чисел
+from math import sqrt
 
 
 def get_prime_numbers(n):
     prime_numbers = []
-    for number in range(2, n+1):
+    for number in range(2, n + 1):
         for prime in prime_numbers:
             if number % prime == 0:
                 break
         else:
             prime_numbers.append(number)
     return prime_numbers
+
 
 # Часть 1
 # На основе алгоритма get_prime_numbers создать класс итерируемых обьектов,
@@ -33,7 +35,7 @@ class PrimeNumbers:
 
     def __next__(self):
         self.i += 1
-        if self.i > self.n+1:
+        if self.i > self.n:
             raise StopIteration
         if self.i > 1:
             if not [x for x in self.list_prime_nambers if self.i % x == 0]:
@@ -42,27 +44,53 @@ class PrimeNumbers:
         return self.__next__()
 
 
-
-
 prime_number_iterator = PrimeNumbers(n=10000)
 for number in prime_number_iterator:
     print(number)
 
 
-# TODO после подтверждения части 1 преподователем, можно делать
 # Часть 2
 # Теперь нужно создать генератор, который выдает последовательность простых чисел до n
 # Распечатать все простые числа до 10000 в столбик
+def heppy_filter(number):
+    str_number = [x for x in str(number)]
+    quantity = len(str_number)
+    half_line = quantity // 2
+    if quantity > 1 :
+        if quantity % 2 == 0:
+            if str_number[:half_line] == str_number[half_line:]:
+                return True
+        else:
+            if int(str_number[half_line]) % 2 == 0 or int(str_number[half_line]) == 0:
+                if str_number[:half_line] == str_number[half_line + 1:]:
+                    return True
+    return False
+
+
+def palindrome_filter(number):
+    str_number = str(number)
+    if len(str_number) > 1:
+        if str_number == str_number[::-1]:
+            return True
+    return False
 
 
 def prime_numbers_generator(n):
-    pass
-    # TODO здесь ваш код
+    if 2 <= n:
+        yield 2
+    yield from (
+        i
+        for i in range(3, n + 1, 2)
+        if all(i % x != 0 for x in range(3, int(sqrt(i) + 1)))
+    )
 
-
-for number in prime_numbers_generator(n=10000):
+prime_numbers_list = []
+for number in prime_numbers_generator(n=100000):
     print(number)
-
+    prime_numbers_list.append(number)
+print(f'{len(prime_numbers_list)}')
+print(f'{list(filter(heppy_filter, prime_numbers_list))} - числа счастливые \n'
+      f'{list(filter(palindrome_filter, prime_numbers_list))} - числа зеркальные')
 
 # Часть 3
 # Написать несколько функций-фильтров, которые выдает True, если число:
