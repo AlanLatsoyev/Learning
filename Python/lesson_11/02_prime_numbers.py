@@ -56,7 +56,7 @@ def heppy_filter(number):
     str_number = [x for x in str(number)]
     quantity = len(str_number)
     half_line = quantity // 2
-    if quantity > 1 :
+    if quantity > 1:
         if quantity % 2 == 0:
             if str_number[:half_line] == str_number[half_line:]:
                 return True
