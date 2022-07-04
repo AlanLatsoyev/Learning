@@ -84,6 +84,7 @@ def prime_numbers_generator(n):
         if all(i % x != 0 for x in range(3, int(sqrt(i) + 1)))
     )
 
+
 prime_numbers_list = []
 for number in prime_numbers_generator(n=100000):
     print(number)
