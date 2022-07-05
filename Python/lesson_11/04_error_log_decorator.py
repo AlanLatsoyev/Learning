@@ -9,8 +9,16 @@
 
 
 def log_errors(func):
-    pass
-    # TODO здесь ваш код
+    def write_errors(*args, **kwargs):
+        try:
+            func(*args, **kwargs)
+        except Exception as exc:
+            with open('function_errors.log', 'a') as file:
+                file.write(f"Имя функции - {func.__name__}, параметры вызова - {args, kwargs}, тип ошибки {type(exc)},"
+                           f" текст ошибки {exc} \n")
+            raise
+
+    return write_errors
 
 
 # Проверить работу на следующих функциях
@@ -43,8 +51,11 @@ for line in lines:
         check_line(line)
     except Exception as exc:
         print(f'Invalid format: {exc}')
-perky(param=42)
-
+# perky(param=42)
+try:
+    perky(param=42)
+except Exception as exc:
+    print(f'Invalid format: {exc}')
 
 # Усложненное задание (делать по желанию).
 # Написать декоратор с параметром - именем файла
@@ -52,4 +63,3 @@ perky(param=42)
 # @log_errors('function_errors.log')
 # def func():
 #     pass
-
