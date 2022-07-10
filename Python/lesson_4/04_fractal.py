@@ -94,7 +94,7 @@ def draw_branches(point, angle, length):
 
 point_0 = sd.get_point(600, 10)
 draw_branches(point=point_0, angle=90, length=100)
-
+print(f'{point_0}')
 
 sd.pause()
 
