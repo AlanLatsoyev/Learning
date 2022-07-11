@@ -170,6 +170,7 @@ def main():
         ticker, volatility = file.run()
         tickers[ticker] = volatility
     print(tickers)
+    print(len(tickers))
 
     dict_max_volatility, dict_min_volatility, dict_zero_volatility = \
         get_max_min_zero(tickers, max_quantity=3, min_quantity=3)
