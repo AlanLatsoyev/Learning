@@ -72,5 +72,122 @@
 #
 #     def run(self):
 #         <обработка данных>
+import os
+import time
+from itertools import islice
 
-# TODO написать код в однопоточном/однопроцессорном стиле
+
+class Extractor:
+    def __init__(self, path):
+        self.path = path
+        self.max_price = 0
+        self.min_price = 0
+        self.price_list = []
+        self.average_price = 0
+        self.volatility = 0
+        self.ticker = None
+
+    def run(self):
+        with open(self.path, 'r') as file:
+            for line in islice(file, 1, None):
+                secid, tradetime, price, quantity = line.split(',')
+                # print(f'{price} - {quantity}', flush=True)
+                price = float(price) / float(quantity)
+                self.price_list.append(price)
+                if self.ticker is None:
+                    self.ticker = secid
+            self.max_price = max(self.price_list)
+            self.min_price = min(self.price_list)
+            self.average_price = (self.max_price + self.min_price) / 2
+            self.volatility = round((((self.max_price - self.min_price) / self.average_price) * 100), 2)
+            print(f'{self.ticker}-{self.volatility}', flush=True)
+        return self.ticker, self.volatility
+
+
+def time_track(func):
+    def surrogate(*args, **kwargs):
+        started_at = time.time()
+
+        result = func(*args, **kwargs)
+
+        ended_at = time.time()
+        elapsed = round(ended_at - started_at, 4)
+        print(f'Функция работала {elapsed} секунд(ы)')
+        return result
+
+    return surrogate
+
+
+def get_list_of_files(path):
+    path = os.path.normpath(path)
+    list_of_file = []
+    for dirpath, dirnames, filenames in os.walk(path):
+        for file in filenames:
+            full_file_path = os.path.join(dirpath, file)
+            list_of_file.append(full_file_path)
+    return list_of_file
+
+
+@time_track
+def main():
+    path = 'trades'
+    list_of_file = get_list_of_files(path)
+    tickers = {}
+    dict_max_volatility = {}
+    dict_min_volatility = {}
+    list_zero_volatility = []
+
+    files = [Extractor(path=path) for path in list_of_file]
+    for file in files:
+        ticker, volatility = file.run()
+        tickers[ticker] = volatility
+    print(tickers)
+
+    for ticker, volatility in tickers.items():
+        if volatility == 0:
+            list_zero_volatility.append(ticker)
+    for ticker in list_zero_volatility:
+        del tickers[ticker]
+    # print(tickers)
+    # print(list_zero_volatility)
+
+    for quantity in range(0, 3):
+        max_volatility = max(tickers.values())
+        for ticker, volatility in tickers.items():
+            if volatility == max_volatility:
+                dict_max_volatility[ticker] = volatility
+        for key in dict_max_volatility.keys():
+            if key in tickers:
+                del tickers[key]
+        min_volatility = min(tickers.values())
+        for ticker, volatility in tickers.items():
+            if volatility == min_volatility:
+                dict_min_volatility[ticker] = volatility
+        for key in dict_min_volatility.keys():
+            if key in tickers:
+                del tickers[key]
+
+    print(f"|{'Максимальная волатильность':-^31}|")
+    for key, value in dict_max_volatility.items():
+        print(f"|{key:>14} - {str(value) + ' %':<14}|")
+
+    print(f"|{'Минимальная волатильность':-^31}|")
+    for key, value in dict_min_volatility.items():
+        print(f"|{key:>14} - {str(value) + ' %':<14}|")
+
+    print(f"|{'Нулевая волатильность':-^31}|")
+    for ticker in list_zero_volatility:
+        print(f"{ticker + ', '}", end='')
+    print()
+
+    #
+    # print(tickers)
+    # print(dict_max_volatility)
+    # print(dict_min_volatility)
+
+    # print(list_of_file)
+    # print(len(list_of_file))
+
+
+if __name__ == '__main__':
+    main()
