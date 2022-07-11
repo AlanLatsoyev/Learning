@@ -78,7 +78,7 @@ from itertools import islice
 
 
 class Extractor:
-    def __init__(self, path):
+    def __init__(self, path, tickers):
         self.path = path
         self.max_price = 0
         self.min_price = 0
@@ -86,12 +86,12 @@ class Extractor:
         self.average_price = 0
         self.volatility = 0
         self.ticker = None
+        self.dict_tickers = tickers
 
     def run(self):
         with open(self.path, 'r') as file:
             for line in islice(file, 1, None):
                 secid, tradetime, price, quantity = line.split(',')
-                # print(f'{price} - {quantity}', flush=True)
                 price = float(price) / float(quantity)
                 self.price_list.append(price)
                 if self.ticker is None:
@@ -101,6 +101,7 @@ class Extractor:
             self.average_price = (self.max_price + self.min_price) / 2
             self.volatility = round((((self.max_price - self.min_price) / self.average_price) * 100), 2)
             print(f'{self.ticker}-{self.volatility}', flush=True)
+
         return self.ticker, self.volatility
 
 
@@ -128,44 +129,50 @@ def get_list_of_files(path):
     return list_of_file
 
 
+def get_max_min_zero(tickers, max_quantity, min_quantity):
+    dict_tickers = tickers.copy()
+    dict_max_volatility = {}
+    dict_min_volatility = {}
+    dict_zero_volatility = {}
+    for ticker, volatility in dict_tickers.items():
+        if volatility == 0:
+            dict_zero_volatility[ticker] = volatility
+    for key in dict_zero_volatility.keys():
+        if key in dict_tickers:
+            del dict_tickers[key]
+    for quantity in range(0, max_quantity):
+        max_volatility = max(dict_tickers.values())
+        for ticker, volatility in dict_tickers.items():
+            if volatility == max_volatility:
+                dict_max_volatility[ticker] = volatility
+        for key in dict_max_volatility.keys():
+            if key in dict_tickers:
+                del dict_tickers[key]
+    for quantity in range(0, min_quantity):
+        min_volatility = min(dict_tickers.values())
+        for ticker, volatility in dict_tickers.items():
+            if volatility == min_volatility:
+                dict_min_volatility[ticker] = volatility
+        for key in dict_min_volatility.keys():
+            if key in dict_tickers:
+                del dict_tickers[key]
+    return dict_max_volatility, dict_min_volatility, dict_zero_volatility
+
+
 @time_track
 def main():
     path = 'trades'
     list_of_file = get_list_of_files(path)
     tickers = {}
-    dict_max_volatility = {}
-    dict_min_volatility = {}
-    list_zero_volatility = []
 
-    files = [Extractor(path=path) for path in list_of_file]
+    files = [Extractor(path=path, tickers=tickers) for path in list_of_file]
     for file in files:
         ticker, volatility = file.run()
         tickers[ticker] = volatility
     print(tickers)
 
-    for ticker, volatility in tickers.items():
-        if volatility == 0:
-            list_zero_volatility.append(ticker)
-    for ticker in list_zero_volatility:
-        del tickers[ticker]
-    # print(tickers)
-    # print(list_zero_volatility)
-
-    for quantity in range(0, 3):
-        max_volatility = max(tickers.values())
-        for ticker, volatility in tickers.items():
-            if volatility == max_volatility:
-                dict_max_volatility[ticker] = volatility
-        for key in dict_max_volatility.keys():
-            if key in tickers:
-                del tickers[key]
-        min_volatility = min(tickers.values())
-        for ticker, volatility in tickers.items():
-            if volatility == min_volatility:
-                dict_min_volatility[ticker] = volatility
-        for key in dict_min_volatility.keys():
-            if key in tickers:
-                del tickers[key]
+    dict_max_volatility, dict_min_volatility, dict_zero_volatility = \
+        get_max_min_zero(tickers, max_quantity=3, min_quantity=3)
 
     print(f"|{'Максимальная волатильность':-^31}|")
     for key, value in dict_max_volatility.items():
@@ -176,17 +183,9 @@ def main():
         print(f"|{key:>14} - {str(value) + ' %':<14}|")
 
     print(f"|{'Нулевая волатильность':-^31}|")
-    for ticker in list_zero_volatility:
+    for ticker in dict_zero_volatility.keys():
         print(f"{ticker + ', '}", end='')
     print()
-
-    #
-    # print(tickers)
-    # print(dict_max_volatility)
-    # print(dict_min_volatility)
-
-    # print(list_of_file)
-    # print(len(list_of_file))
 
 
 if __name__ == '__main__':
