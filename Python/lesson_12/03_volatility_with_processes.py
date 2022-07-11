@@ -33,7 +33,6 @@ class Extractor(multiprocessing.Process):
         self.average_price = 0
         self.volatility = 0
         self.ticker = None
-        self.f = {}
         self.collector = collector
 
     def run(self):
