@@ -32,6 +32,7 @@ class ClientThread(threading.Thread):
             print("Отключение клиента : ", self.clientAddress, flush=True)
             return True
         try:
+            self.msg = self.msg.split('\r')
             self.number, self.id_, self.time, self.grop = self.msg.split(' ')
         except Exception as exc:
             self.csocket.send(bytes(str(exc), 'UTF-8'))
