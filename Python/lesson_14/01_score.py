@@ -29,8 +29,34 @@
 # Скрипт должен принимать параметр --result и печатать на консоль:
 #   Количество очков для результатов ХХХ - УУУ.
 
+import argparse
+import logging
+import logging.config
+from bowling import get_score
+from log_config import LOG_CONFIG
+
+def main():
+    logging.config.dictConfig(LOG_CONFIG)
+    log = logging.getLogger('result')
+    log_exc = logging.getLogger('errors')
+    result = argparse.ArgumentParser(description='My example explanation')
+    result.add_argument(
+        '--result',
+        type=str,
+        default='0',
+        help='provide an str (default: 0)'
+    )
+    date = result.parse_args()
+    try:
+        log.info(get_score(date.result))
+    except Exception:
+        log_exc.exception('')
 
 
+
+
+if __name__ == '__main__':
+    main()
 # При написании кода помнить, что заказчик может захотеть доработок и новых возможностей...
 # И, возможно, вам пригодится паттерн проектирования "Состояние",
 #   см https://clck.ru/Fudd8 и https://refactoring.guru/ru/design-patterns/state
