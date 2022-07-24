@@ -35,6 +35,7 @@ import logging.config
 from bowling import get_score
 from log_config import LOG_CONFIG
 
+
 def main():
     logging.config.dictConfig(LOG_CONFIG)
     log = logging.getLogger('result')
@@ -48,11 +49,9 @@ def main():
     )
     date = result.parse_args()
     try:
-        log.info(get_score(date.result))
+        log.info(f'Количество очков для результатов {date.result} - {get_score(date.result)}')
     except Exception:
         log_exc.exception('')
-
-
 
 
 if __name__ == '__main__':
@@ -60,4 +59,3 @@ if __name__ == '__main__':
 # При написании кода помнить, что заказчик может захотеть доработок и новых возможностей...
 # И, возможно, вам пригодится паттерн проектирования "Состояние",
 #   см https://clck.ru/Fudd8 и https://refactoring.guru/ru/design-patterns/state
-

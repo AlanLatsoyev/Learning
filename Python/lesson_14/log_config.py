@@ -9,12 +9,15 @@ LOG_CONFIG = {
         "file_handler": {
             "class": "logging.FileHandler",
             "formatter": "my_formatter",
-            "filename": "result.log"
+            "filename": "result.log",
+            "encoding": "utf8",
         },
         "error_file_handler": {
             "class": "logging.FileHandler",
             "formatter": "my_formatter",
-            "filename": "result_errors.log"
+            "filename": "result_errors.log",
+            "encoding": "utf8",
+
         },
 
     },
