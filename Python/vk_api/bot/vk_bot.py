@@ -26,6 +26,7 @@ class Bot:
 
     def run(self):
         for event in self.long_poller.listen():
+            print(event)
             log.debug(f"Получено сообщение")
             try:
                 self.on_event(event)
