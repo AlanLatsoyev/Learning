@@ -39,104 +39,105 @@ print(len(data))
 dates = set()
 cities = set()
 for key, message in data.items():
+    print(key)
     dates.add(re.search(re_date, message)[1])
     cities.add(re.search(re_city, message)[1])
 
-pprint(dates)
-pprint(cities)
+# pprint(dates)
+# pprint(cities)
 
 # составим функции форматирования:
-
-exchanges = {
-    'лондон': Decimal(1.0),  # фунт -> фунт
-    'берлин': Decimal(0.87),  # евро -> фунт
-    'москва': Decimal(0.12),  # рубли -> фунт
-    'токио': Decimal(0.7),  # японские йены -> фунт
-}
-
-
-def date_str_to_datetime(date_str):
-    return datetime.strptime(date_str, '%d%m%y')
-
-
-def expenses_str_to_decimal(expenses_str, city):
-    return Decimal(expenses_str) * exchanges[city]
-
-
-# составим результирующий массив:
-
-result = []
-for key, message in data.items():
-    date_str = re.search(re_date, message)[1]
-    city = re.search(re_city, message)[1]
-    expenses_str = re.search(re_expenses, message)[1]
-
-    result.append({
-        'date': date_str_to_datetime(date_str),
-        'city': city,
-        'expenses': expenses_str_to_decimal(expenses_str, city),
-    })
-
-pprint(result)
-
-result = sorted(result, key=lambda record: record['date'])
-
-pprint(result)
-
-
-# генерируем подробный файл
-
-result_formatted = [
-    {
-        'date': record['date'].strftime('%d.%m.%Y'),
-        'city': record['city'],
-        'expenses': str(record['expenses'].quantize(Decimal('1.00'), ROUND_HALF_EVEN))
-    }
-    for record in result
-]
-
-pprint(result_formatted)
-
-with open('external_data/BondDetail.csv', 'w') as out_detail_file:
-    writer = csv.DictWriter(out_detail_file, fieldnames=['date', 'city', 'expenses'])
-    writer.writeheader()
-    writer.writerows(result_formatted)
-
-
-# агрегируем по месяцам:
-
-result_aggregated_temp = defaultdict(lambda: {'cities': set(), 'expenses_sum': Decimal(0),
-                                              'month': '', 'date_for_sort': None})
-for record in result:
-    month_datetime = datetime(year=record['date'].year, month=record['date'].month, day=1)
-    month = month_datetime.strftime('%m.%Y')
-    result_aggregated_temp[month]['cities'].add(record['city'])
-    result_aggregated_temp[month]['expenses_sum'] += record['expenses']
-    result_aggregated_temp[month]['month'] = month
-    result_aggregated_temp[month]['date_for_sort'] = month_datetime
-
-pprint(result_aggregated_temp)
-
-result_aggregated = sorted(result_aggregated_temp.values(), key=lambda record: record['date_for_sort'])
-pprint(result_aggregated)
-
-
-# генерируем в агрегированный файл
-
-result_aggregated_formatted = [
-    {
-        'month': record['month'],
-        'cities': ', '.join(record['cities']),
-        'expenses_sum': str(record['expenses_sum'].quantize(Decimal('1.00'), ROUND_HALF_EVEN))
-    }
-    for record in result_aggregated
-]
-
-pprint(result_aggregated_formatted)
-
-with open('external_data/BondByMonth.csv', 'w') as out_monthly_file:
-    writer = csv.DictWriter(out_monthly_file, fieldnames=['month', 'cities', 'expenses_sum'])
-    writer.writeheader()
-    writer.writerows(result_aggregated_formatted)
-
-
+#
+# exchanges = {
+#     'лондон': Decimal(1.0),  # фунт -> фунт
+#     'берлин': Decimal(0.87),  # евро -> фунт
+#     'москва': Decimal(0.12),  # рубли -> фунт
+#     'токио': Decimal(0.7),  # японские йены -> фунт
+# }
+#
+#
+# def date_str_to_datetime(date_str):
+#     return datetime.strptime(date_str, '%d%m%y')
+#
+#
+# def expenses_str_to_decimal(expenses_str, city):
+#     return Decimal(expenses_str) * exchanges[city]
+#
+#
+# # составим результирующий массив:
+#
+# result = []
+# for key, message in data.items():
+#     date_str = re.search(re_date, message)[1]
+#     city = re.search(re_city, message)[1]
+#     expenses_str = re.search(re_expenses, message)[1]
+#
+#     result.append({
+#         'date': date_str_to_datetime(date_str),
+#         'city': city,
+#         'expenses': expenses_str_to_decimal(expenses_str, city),
+#     })
+#
+# pprint(result)
+#
+# result = sorted(result, key=lambda record: record['date'])
+#
+# pprint(result)
+#
+#
+# # генерируем подробный файл
+#
+# result_formatted = [
+#     {
+#         'date': record['date'].strftime('%d.%m.%Y'),
+#         'city': record['city'],
+#         'expenses': str(record['expenses'].quantize(Decimal('1.00'), ROUND_HALF_EVEN))
+#     }
+#     for record in result
+# ]
+#
+# pprint(result_formatted)
+#
+# with open('external_data/BondDetail.csv', 'w') as out_detail_file:
+#     writer = csv.DictWriter(out_detail_file, fieldnames=['date', 'city', 'expenses'])
+#     writer.writeheader()
+#     writer.writerows(result_formatted)
+#
+#
+# # агрегируем по месяцам:
+#
+# result_aggregated_temp = defaultdict(lambda: {'cities': set(), 'expenses_sum': Decimal(0),
+#                                               'month': '', 'date_for_sort': None})
+# for record in result:
+#     month_datetime = datetime(year=record['date'].year, month=record['date'].month, day=1)
+#     month = month_datetime.strftime('%m.%Y')
+#     result_aggregated_temp[month]['cities'].add(record['city'])
+#     result_aggregated_temp[month]['expenses_sum'] += record['expenses']
+#     result_aggregated_temp[month]['month'] = month
+#     result_aggregated_temp[month]['date_for_sort'] = month_datetime
+#
+# pprint(result_aggregated_temp)
+#
+# result_aggregated = sorted(result_aggregated_temp.values(), key=lambda record: record['date_for_sort'])
+# pprint(result_aggregated)
+#
+#
+# # генерируем в агрегированный файл
+#
+# result_aggregated_formatted = [
+#     {
+#         'month': record['month'],
+#         'cities': ', '.join(record['cities']),
+#         'expenses_sum': str(record['expenses_sum'].quantize(Decimal('1.00'), ROUND_HALF_EVEN))
+#     }
+#     for record in result_aggregated
+# ]
+#
+# pprint(result_aggregated_formatted)
+#
+# with open('external_data/BondByMonth.csv', 'w') as out_monthly_file:
+#     writer = csv.DictWriter(out_monthly_file, fieldnames=['month', 'cities', 'expenses_sum'])
+#     writer.writeheader()
+#     writer.writerows(result_aggregated_formatted)
+#
+#

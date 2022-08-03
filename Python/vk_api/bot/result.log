@@ -73,3 +73,37 @@ vk_api.exceptions.ApiError: [100] One of the parameters specified was missing or
 25-07-2022 21:06  - DEBUG - Получено сообщение
 25-07-2022 21:06  - DEBUG - Получено сообщение
 25-07-2022 21:06  - DEBUG - Получено сообщение
+03-08-2022 20:36  - DEBUG - Получено сообщение
+03-08-2022 20:36  - ERROR - ошибка в обработке событий
+Traceback (most recent call last):
+  File "D:\Git\Python\vk_api\bot\vk_bot.py", line 47, in run
+    self.on_event(event)
+  File "D:\Git\Python\vk_api\bot\vk_bot.py", line 56, in on_event
+    user_id = event.object.message.peer_id  # event.object['message']['peer_id']
+AttributeError: 'dict' object has no attribute 'peer_id'
+03-08-2022 20:39  - DEBUG - Получено сообщение
+03-08-2022 20:40  - DEBUG - Получено сообщение
+03-08-2022 20:46  - DEBUG - Получено сообщение
+03-08-2022 20:46  - DEBUG - Получено сообщение
+03-08-2022 20:46  - DEBUG - Получено сообщение
+03-08-2022 20:47  - DEBUG - Получено сообщение
+03-08-2022 20:47  - ERROR - ошибка в обработке событий
+Traceback (most recent call last):
+  File "D:\Git\Python\vk_api\bot\vk_bot.py", line 47, in run
+    self.on_event(event)
+  File "D:\Git\Python\vk_api\bot\vk_bot.py", line 72, in on_event
+    self.api.messages.send(message=text_to_send,  # event.object['message']['text']
+UnboundLocalError: local variable 'text_to_send' referenced before assignment
+03-08-2022 20:48  - DEBUG - Получено сообщение
+03-08-2022 20:50  - DEBUG - Получено сообщение
+03-08-2022 20:51  - DEBUG - Получено сообщение
+03-08-2022 20:52  - DEBUG - Получено сообщение
+03-08-2022 20:53  - DEBUG - Получено сообщение
+03-08-2022 21:01  - DEBUG - User gest {'name': 'Дата проведения', 'tokens': ('когда', 'сколько', 'дата', 'дату'), 'scenario': None, 'answer': 'Конференция проводится 15го апреля, регистрация начинается в 10 утра'}
+03-08-2022 21:01  - DEBUG - User gest {'name': 'Место проведения', 'tokens': ('где', 'место', 'локация', 'адрес', 'метро'), 'scenario': None, 'answer': 'Конференция пройдет в павильоне 18Г в Экспоцентре'}
+03-08-2022 21:01  - DEBUG - User gest {'name': 'Регистрация', 'tokens': ('регист', 'добав'), 'scenario': 'registration', 'answer': None}
+03-08-2022 21:01  - DEBUG - Получено сообщение
+03-08-2022 21:01  - DEBUG - Получено сообщение
+03-08-2022 21:01  - DEBUG - Получено сообщение
+03-08-2022 21:01  - DEBUG - Получено сообщение
+03-08-2022 21:01  - DEBUG - Получено сообщение
